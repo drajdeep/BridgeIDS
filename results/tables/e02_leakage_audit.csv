@@ -1,0 +1,7 @@
+dataset,setting,binary_f1,binary_auc,fine_macro_f1,fine_accuracy,top3_features
+ForgeIIoT,"leak-free, random split",0.9651687888658572,0.9681073845739445,0.6600862154070546,0.6944896535689374,"tcp.time_delta, pbs_log_tcp_seq, pbs_log_tcp_ack"
+ForgeIIoT,"+ frame.number/epoch/tcp.stream, random split",0.9999247837532907,0.9999986743653541,0.9989701270030267,0.9989371242568174,"_ts, _frame_no, _tcp_stream"
+ForgeIIoT,"leak-free, capture-temporal split",0.9658835852162203,0.9403114384620641,0.5996087985235375,0.6754575347925732,"tcp.time_delta, pbs_log_tcp_seq, pbs_log_tcp_ack"
+ForgeIIoT,"+ identifiers, capture-temporal split",0.9455125710282556,0.9097727226794949,0.6461579012900817,0.7061812867439466,"_ts, _frame_no, _tcp_stream"
+Edge-IIoTset,leak-free,0.9995111745497918,0.999909914739329,0.881929567205126,0.9075516087345505,"pbs_log_tcp_ack, pbs_log_tcp_seq, tcp.flags"
+Edge-IIoTset,+ IP / frame.time / checksums,0.9994328072131275,0.9995950207050016,0.8934137628420163,0.9041055038271646,"enc__frame_time, enc_ip.dst_host, enc_ip.src_host"

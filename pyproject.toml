@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bridgeids"
+version = "1.0.0"
+description = "Bridging legacy IDS and modern IIoT security: cross-dataset transfer, domain adaptation, continual & zero-shot learning, XAI and dynamic detection (NSL-KDD -> ForgeIIoT -> Edge-IIoTset)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+bridgeids = "bridgeids.run:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+bridgeids = ["stream/static/*.html"]

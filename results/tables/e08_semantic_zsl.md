@@ -1,0 +1,4 @@
+| method             | unseen_classes                             |   top1_accuracy |   chance |   acc_DDoS_HTTP |   acc_XSS |   acc_Fingerprinting |   acc_Ransomware |
+|:-------------------|:-------------------------------------------|----------------:|---------:|----------------:|----------:|---------------------:|-----------------:|
+| DAP (attribute)    | DDoS_HTTP, XSS, Fingerprinting, Ransomware |          0.5845 |   0.2500 |          0.0677 |    0.9273 |               0.0000 |           0.8532 |
+| Text-embedding ZSL | DDoS_HTTP, XSS, Fingerprinting, Ransomware |          0.3586 |   0.2500 |          0.1240 |    0.0000 |               0.0767 |           0.9562 |

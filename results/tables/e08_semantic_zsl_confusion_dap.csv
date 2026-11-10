@@ -1,0 +1,5 @@
+true,DDoS_HTTP,Ransomware,XSS
+DDoS_HTTP,136,0,1872
+Fingerprinting,172,48,80
+Ransomware,0,1772,305
+XSS,54,85,1772

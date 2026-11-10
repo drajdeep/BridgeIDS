@@ -1,0 +1,40 @@
+// ===================== BridgeIDS — DAX measures =====================
+// Paste each measure via Modeling > New measure (table names = CSV file names without .csv)
+
+// ---------- model performance (fact_model_performance)
+Avg F1            = AVERAGE ( fact_model_performance[f1] )
+Avg ROC-AUC       = AVERAGE ( fact_model_performance[roc_auc] )
+Avg MCC           = AVERAGE ( fact_model_performance[mcc] )
+Cross-dataset AUC = CALCULATE ( [Avg ROC-AUC], fact_model_performance[source] <> fact_model_performance[target] )
+In-domain AUC     = CALCULATE ( [Avg ROC-AUC], fact_model_performance[source] = fact_model_performance[target] )
+Generalisation Gap = [In-domain AUC] - [Cross-dataset AUC]
+
+// ---------- drift (fact_drift_summary / fact_drift_feature)
+Proxy A-distance  = AVERAGE ( fact_drift_summary[proxy_A_distance] )
+Concept Shift     = AVERAGE ( fact_drift_summary[mean_conditional_label_shift] )
+Mean JS (feature) = AVERAGE ( fact_drift_feature[js] )
+Drifted Features (JS>0.3) = CALCULATE ( COUNTROWS ( fact_drift_feature ), fact_drift_feature[js] > 0.3 )
+
+// ---------- zero-shot (fact_zeroshot_lofo)
+Unseen Detection (hybrid) = AVERAGE ( fact_zeroshot_lofo[hybrid@1%FPR] )
+Unseen Detection (supervised) = AVERAGE ( fact_zeroshot_lofo[supervised@1%FPR] )
+
+// ---------- live stream (stream_events / stream_alerts / stream_metrics / stream_drift)
+Packets           = COUNTROWS ( stream_events )
+Alerts            = CALCULATE ( COUNTROWS ( stream_events ), stream_events[pred] = 1 )
+Alert Rate        = DIVIDE ( [Alerts], [Packets] )
+True Positives    = CALCULATE ( COUNTROWS ( stream_events ), stream_events[pred] = 1, stream_events[truth_y] = 1 )
+False Positives   = CALCULATE ( COUNTROWS ( stream_events ), stream_events[pred] = 1, stream_events[truth_y] = 0 )
+False Negatives   = CALCULATE ( COUNTROWS ( stream_events ), stream_events[pred] = 0, stream_events[truth_y] = 1 )
+True Negatives    = CALCULATE ( COUNTROWS ( stream_events ), stream_events[pred] = 0, stream_events[truth_y] = 0 )
+Live Precision    = DIVIDE ( [True Positives], [True Positives] + [False Positives] )
+Live Recall       = DIVIDE ( [True Positives], [True Positives] + [False Negatives] )
+Live F1           = DIVIDE ( 2 * [Live Precision] * [Live Recall], [Live Precision] + [Live Recall] )
+Live FPR          = DIVIDE ( [False Positives], [False Positives] + [True Negatives] )
+Zero-day Alerts   = CALCULATE ( COUNTROWS ( stream_events ), stream_events[family] = "UNKNOWN_ANOMALY" )
+Avg Latency (ms)  = AVERAGE ( stream_events[latency_ms] )
+Drift Events      = COUNTROWS ( stream_drift )
+MQTT Share        = DIVIDE ( CALCULATE ( COUNTROWS ( stream_events ), stream_events[service] = "mqtt" ), [Packets] )
+
+// calculated column on stream_events (Modeling > New column) — readable timestamp
+Event Time = DATE ( 1970, 1, 1 ) + stream_events[ts] / 86400

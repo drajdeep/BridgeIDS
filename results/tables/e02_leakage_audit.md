@@ -1,0 +1,8 @@
+| dataset      | setting                                       |   binary_f1 |   binary_auc |   fine_macro_f1 |   fine_accuracy | top3_features                                     |
+|:-------------|:----------------------------------------------|------------:|-------------:|----------------:|----------------:|:--------------------------------------------------|
+| ForgeIIoT    | leak-free, random split                       |      0.9652 |       0.9681 |          0.6601 |          0.6945 | tcp.time_delta, pbs_log_tcp_seq, pbs_log_tcp_ack  |
+| ForgeIIoT    | + frame.number/epoch/tcp.stream, random split |      0.9999 |       1.0000 |          0.9990 |          0.9989 | _ts, _frame_no, _tcp_stream                       |
+| ForgeIIoT    | leak-free, capture-temporal split             |      0.9659 |       0.9403 |          0.5996 |          0.6755 | tcp.time_delta, pbs_log_tcp_seq, pbs_log_tcp_ack  |
+| ForgeIIoT    | + identifiers, capture-temporal split         |      0.9455 |       0.9098 |          0.6462 |          0.7062 | _ts, _frame_no, _tcp_stream                       |
+| Edge-IIoTset | leak-free                                     |      0.9995 |       0.9999 |          0.8819 |          0.9076 | pbs_log_tcp_ack, pbs_log_tcp_seq, tcp.flags       |
+| Edge-IIoTset | + IP / frame.time / checksums                 |      0.9994 |       0.9996 |          0.8934 |          0.9041 | enc__frame_time, enc_ip.dst_host, enc_ip.src_host |

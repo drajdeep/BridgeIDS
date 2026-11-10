@@ -1,0 +1,16 @@
+| feature family          | NSL-KDD                                | ForgeIIoT                                | Edge-IIoTset                              |
+|:------------------------|:---------------------------------------|:-----------------------------------------|:------------------------------------------|
+| Connection duration     | duration                               | —                                        | —                                         |
+| Byte volume             | src_bytes, dst_bytes                   | frame.len, ip.len, tcp.len, udp.length   | tcp.len, http.content_length              |
+| Protocol                | protocol_type                          | ip.proto, frame.protocols                | derived from tcp/udp/icmp/arp fields      |
+| Service / port          | service (70 names)                     | tcp/udp src+dst ports                    | tcp.srcport, tcp.dstport, udp.port        |
+| TCP flag semantics      | flag (SF,S0,REJ…)                      | tcp.flags.syn/ack/fin/reset/push         | tcp.flags (bitmask), tcp.connection.*     |
+| Time-window statistics  | count, srv_count, *_rate (19 features) | — (computable from timestamps)           | —                                         |
+| Content / host features | hot, num_failed_logins, root_shell…    | —                                        | —                                         |
+| ARP / L2                | —                                      | arp.opcode, eth.*                        | arp.opcode, arp.hw.size                   |
+| ICMP                    | service ecr_i/eco_i                    | icmp.type, icmp.code, icmpv6.type        | icmp.checksum, icmp.seq_le                |
+| HTTP                    | service http                           | http.request.method, http.content_length | http.request.method, uri, referer         |
+| MQTT                    | —                                      | mqtt.msgtype, mqtt.len, mqtt.topic_len…  | mqtt.msgtype, mqtt.topic, mqtt.protoname… |
+| DNS                     | service domain_u                       | udp port 53/5353                         | dns.qry.*                                 |
+| Modbus/TCP              | —                                      | —                                        | mbtcp.* (constant in ML subset)           |
+| Granularity             | connection record                      | packet                                   | packet                                    |

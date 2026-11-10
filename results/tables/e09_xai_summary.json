@@ -1,0 +1,84 @@
+{
+  "lime_shap_top6_jaccard_mean": 0.3194444444444445,
+  "per_record": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333,
+    0.5,
+    0.3333333333333333,
+    0.2,
+    0.5,
+    0.5,
+    0.2,
+    0.2,
+    0.2,
+    0.2
+  ],
+  "forge_model_on_forge_vs_edge_rank_agreement": {
+    "spearman": 0.9946438639353504,
+    "kendall": 0.9561018437225635,
+    "top10_jaccard": 0.8181818181818182
+  },
+  "narratives": [
+    {
+      "record": 13222,
+      "true_family": "DDoS_UDP",
+      "narrative": "Record 13222: classified as ATTACK with confidence 100%. Main drivers: absence of MQTT broker port (towards attack, +2.85); tcp.flags = 0 (towards attack, +1.76); absence of HTTP port (towards normal, -1.23); presence of registered high port (towards attack, +0.81)."
+    },
+    {
+      "record": 2604,
+      "true_family": "Ransomware",
+      "narrative": "Record 2604: classified as ATTACK with confidence 100%. Main drivers: absence of MQTT broker port (towards attack, +2.81); TCP sequence offset = 0.693 (towards attack, +1.66); absence of HTTP port (towards normal, -1.35); presence of registered high port (towards attack, +1.20)."
+    },
+    {
+      "record": 23341,
+      "true_family": "DDoS_UDP",
+      "narrative": "Record 23341: classified as ATTACK with confidence 100%. Main drivers: absence of MQTT broker port (towards attack, +2.85); tcp.flags = 0 (towards attack, +1.76); absence of HTTP port (towards normal, -1.23); presence of registered high port (towards attack, +0.81)."
+    },
+    {
+      "record": 15914,
+      "true_family": "DDoS_UDP",
+      "narrative": "Record 15914: classified as ATTACK with confidence 100%. Main drivers: absence of MQTT broker port (towards attack, +2.81); tcp.flags = 0 (towards attack, +1.94); absence of HTTP port (towards normal, -1.39); TCP sequence offset = 0 (towards attack, +0.69)."
+    },
+    {
+      "record": 19740,
+      "true_family": "DDoS_UDP",
+      "narrative": "Record 19740: classified as ATTACK with confidence 100%. Main drivers: absence of MQTT broker port (towards attack, +2.85); tcp.flags = 0 (towards attack, +1.76); absence of HTTP port (towards normal, -1.23); presence of registered high port (towards attack, +0.81)."
+    },
+    {
+      "record": 25891,
+      "true_family": "XSS",
+      "narrative": "Record 25891: classified as ATTACK with confidence 100%. Main drivers: presence of HTTP port (towards attack, +3.05); absence of MQTT broker port (towards attack, +2.82); tcp.flags = 24 (towards normal, -1.05); TCP ACK offset = 4.84 (towards normal, -1.01)."
+    },
+    {
+      "record": 2697,
+      "true_family": "DDoS_TCP",
+      "narrative": "Record 2697: classified as ATTACK with confidence 100%. Main drivers: presence of HTTP port (towards attack, +3.52); absence of MQTT broker port (towards attack, +2.59); tcp.flags = 20 (towards attack, +1.47); TCP ACK offset = 4.8 (towards normal, -1.34)."
+    },
+    {
+      "record": 13050,
+      "true_family": "DDoS_TCP",
+      "narrative": "Record 13050: classified as ATTACK with confidence 100%. Main drivers: presence of HTTP port (towards attack, +3.52); absence of MQTT broker port (towards attack, +2.59); tcp.flags = 20 (towards attack, +1.47); TCP ACK offset = 4.8 (towards normal, -1.34)."
+    },
+    {
+      "record": 2855,
+      "true_family": "DDoS_HTTP",
+      "narrative": "Record 2855: classified as ATTACK with confidence 100%. Main drivers: presence of HTTP port (towards attack, +3.15); absence of MQTT broker port (towards attack, +2.82); absence of registered high port (towards normal, -1.00); tcp.connection.syn = 1 (towards normal, -0.98)."
+    },
+    {
+      "record": 21039,
+      "true_family": "Vulnerability_scanner",
+      "narrative": "Record 21039: classified as ATTACK with confidence 100%. Main drivers: absence of MQTT broker port (towards attack, +2.84); presence of HTTP port (towards attack, +2.40); TCP sequence offset = 10.1 (towards attack, +0.76); tcp.flags = 24 (towards normal, -0.59)."
+    },
+    {
+      "record": 29433,
+      "true_family": "Password",
+      "narrative": "Record 29433: classified as ATTACK with confidence 100%. Main drivers: presence of HTTP port (towards attack, +3.05); absence of MQTT broker port (towards attack, +2.82); tcp.flags = 24 (towards normal, -1.05); TCP ACK offset = 5.57 (towards normal, -1.01)."
+    },
+    {
+      "record": 6131,
+      "true_family": "DDoS_TCP",
+      "narrative": "Record 6131: classified as ATTACK with confidence 100%. Main drivers: presence of HTTP port (towards attack, +2.84); absence of MQTT broker port (towards attack, +2.83); TCP sequence offset = 0 (towards attack, +0.93); TCP ACK offset = 20.8 (towards normal, -0.75)."
+    }
+  ]
+}

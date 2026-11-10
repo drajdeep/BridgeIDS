@@ -1,0 +1,3 @@
+method,unseen_classes,top1_accuracy,chance,acc_DDoS_HTTP,acc_XSS,acc_Fingerprinting,acc_Ransomware
+DAP (attribute),"DDoS_HTTP, XSS, Fingerprinting, Ransomware",0.5844980940279543,0.25,0.06772908366533864,0.9272632129774987,0.0,0.8531535869041887
+Text-embedding ZSL,"DDoS_HTTP, XSS, Fingerprinting, Ransomware",0.35864040660736973,0.25,0.12400398406374502,0.0,0.07666666666666666,0.9561868078960039

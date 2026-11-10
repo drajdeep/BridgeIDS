@@ -1,0 +1,111 @@
+Metadata-Version: 2.4
+Name: bridgeids
+Version: 1.0.0
+Summary: Bridging legacy IDS and modern IIoT security: cross-dataset transfer, domain adaptation, continual & zero-shot learning, XAI and dynamic detection (NSL-KDD -> ForgeIIoT -> Edge-IIoTset)
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
+# BridgeIDS — Bridging Legacy IDS and Modern IIoT Security
+
+**Cross-dataset transfer learning · domain adaptation · continual learning · zero-shot detection · NLP interlingua ·
+explainable AI · drift analysis · dynamic (streaming) detection · Power BI**
+
+```
+NSL-KDD (legacy, connections) ──► ForgeIIoT (bridge, MQTT IIoT packets) ──► Edge-IIoTset (modern IIoT packets)
+```
+
+The project implements the full two-team plan (`docs/img/project_plan.jpg`) and extends it. It answers RQ1–RQ5 plus
+**RQ6: does dynamic, adaptive detection recover performance after a domain shift?** Dataset records are replayed as
+real network packets (UDP / TCP / HTTP / MQTT) into a live, explainable and self-adapting detector.
+
+## Key results (from `results/tables`, seed 42)
+
+| Question | Finding |
+|---|---|
+| RQ1 legacy → modern | NSL-KDD model on Edge-IIoTset: ROC-AUC **0.583** (near chance); Edge → NSL is inverted (AUC 0.253), a sign of concept drift |
+| RQ2 bridge | ForgeIIoT → Edge-IIoTset: AUC **0.853** (CBS), F1 0.950 (PBS); proxy-A-distance 1.44 (Forge–Edge) vs 1.97 (NSL–Edge); concept shift 0.035 vs 0.386 |
+| RQ3 domain adaptation | helps only where concepts are shared (CORAL +0.055 AUC NSL→Forge, DomainNorm +0.037 Forge→Edge); cannot fix NSL→Edge |
+| NLP interlingua | Forge → NSL AUC 0.340 → **0.787**; NSL → Edge 0.583 → 0.714 (numeric → text / numeric+text) |
+| Continual learning | EWC+Replay final balanced acc **0.857** (naive 0.744), BWT +0.148 |
+| RQ5 zero-shot | never-seen Edge INJECTION detected at **98%** using only benign target traffic (benign FPR 10%); DAP names unseen classes 58% vs 25% chance |
+| RQ4 XAI | SHAP ranking agreement Forge–Edge ρ=**0.62**, NSL–Forge ρ=-0.03; explanations reveal the same shift |
+| RQ6 static → dynamic | after a Forge→Edge shift: MCC 0.618 (static) → **0.864** (dynamic, 10% feedback), FPR 0.58 → 0.22; drift flagged 1128 packets after the switch |
+| Leakage audit | ForgeIIoT fine-grained accuracy 69.4% leak-free vs **99.9%** with frame.number/epoch/tcp.stream, which explains the earlier notebook's "100%" |
+
+![live dashboard](docs/img/dashboard_live.png)
+
+
+## Quick start
+
+| | Windows | Linux / macOS |
+|---|---|---|
+| install | `setup_windows.bat` | `./setup_linux.sh` |
+| all experiments + paper + dashboards | `run_all.bat` | `./run_all.sh` |
+| live demo | `demo_stream.bat campaign edge` | `./demo_stream.sh campaign edge` |
+
+Detailed guides: [`docs/SETUP_WINDOWS.md`](docs/SETUP_WINDOWS.md) · [`docs/SETUP_LINUX.md`](docs/SETUP_LINUX.md).
+Python 3.10–3.13, CPU only (no CUDA or PyTorch: a small numpy NN engine provides the MLP, DANN and EWC).
+
+The zip already contains the prepared dataset samples (`data/processed`), trained live-detector models
+(`results/models`) and all results, so everything works without downloading the raw data again.
+
+## Commands
+
+```bash
+python -m bridgeids.run prepare [--force]        # raw data -> data/processed/*.parquet
+python -m bridgeids.run exp all                  # experiments 01-12 (or: exp 03 05 08)
+python -m bridgeids.run report                   # reports/paper_draft.md, reports/results_dashboard.html, powerbi/data
+python -m bridgeids.run serve [--artifacts bench_forge_only]   # live detector  http://127.0.0.1:8000
+python -m bridgeids.run replay --scenario campaign|zero_day|domain_shift|shuffle \
+                               --dataset edge|forge|nsl --rate 400 --transport udp|tcp|http|mqtt
+```
+
+## What is in the box
+
+| Experiment | Plan item | Main outputs (`results/tables`, `results/figures`) |
+|---|---|---|
+| 01 dataset study + taxonomy | T1-1, T2-2 | `e01_dataset_statistics`, `e01_attack_relationship_matrix` |
+| 02 baselines (DT, RF, AdaBoost, XGB, LGBM, MLP) + **leakage audit** | T1-3 | `e02_baselines_binary`, `e02_leakage_audit` |
+| 03 cross-dataset testing / domain-shift report | T1-4, RQ1, RQ2 | `e03_domain_shift_report`, `e03_cbs_matrix_roc_auc.png` |
+| 04 transfer learning (0.02–10 % target labels) | T1-5 | `e04_transfer_learning_results`, `e04_transfer_curves.png` |
+| 05 domain adaptation (DomainNorm, CORAL, TCA, IW, self-training, DANN) | T1-6, RQ3 | `e05_domain_adaptation` |
+| 06 continual learning (naive, EWC, replay, EWC+replay, GBM, joint) | T1-7 | `e06_continual_learning`, `e06_continual_matrices.png` |
+| 07 NLP representation / language interlingua | T2-3 | `e07_nlp_cross_dataset`, `e07_text_embedding_map.png` |
+| 08 zero-shot (leave-family-out, cross-dataset, DAP, text ZSL) | T2-4, RQ5 | `e08_zeroshot_*`, `e08_semantic_zsl` |
+| 09 XAI (SHAP, LIME, explanation drift, narratives) | T2-5, RQ4 | `e09_*` |
+| 10 drift (KL, JS, Wasserstein, PSI, MMD, proxy-A, concept, attack) | T2-6 | `e10_drift_summary` |
+| 11 static vs dynamic detection under domain shift | RQ6 | `e11_stream_benchmark`, `e11_stream_static_vs_dynamic.png` |
+| 12 live-detector models, Weka J48/RF/AdaBoostM1, Power BI export | T1-3, T2-7 | `e12_weka_results`, `powerbi/data` |
+
+Also included:
+
+* **Research write-ups:** `reports/paper_draft.md` (auto-generated with live numbers), `reports/related_work.md` (44 papers, 2023–2026), `reports/results_dashboard.html`.
+* **Plan audit:** `docs/PLAN_COVERAGE.md` covers what the previous team delivered, what was fixed and what was added, plus the improved plan.
+* **Architecture:** `docs/ARCHITECTURE.md`.
+* **Power BI kit:** `powerbi/POWERBI_GUIDE.md` with DAX measures, theme, Power Query script, star-schema CSVs and three real-time options.
+* **Weka:** ARFF exports and scripts in `weka/`.
+* **Walkthrough notebook:** `notebooks/BridgeIDS_walkthrough.ipynb`; the original hand-over notebooks are kept in `notebooks/handover_original`.
+
+## Project layout
+
+```
+configs/default.yaml        all paths, sample sizes, seeds, stream settings
+src/bridgeids/
+  data/        loaders.py (NSL txt/arff, Forge raw captures, Edge) · taxonomy.py (7 super-classes, attributes, descriptions)
+  features/    views.py   canonical view -> CBS (all datasets) / PBS (Forge<->Edge) / native leak-free
+  models/      zoo.py (baselines) · npnet.py (numpy MLP, DANN+GRL, exact Fisher/EWC) · hybrid.py (zero-day hybrid)
+  adaptation/  methods.py (DomainNorm, CORAL, TCA, importance weighting, self-training)
+  nlp/         flow2text.py (interlingua) · encoders.py (SBERT or offline TF-IDF+LSA)
+  xai/         explain.py (SHAP, LIME, rank agreement, narratives)
+  drift.py     KL / JS / Wasserstein / PSI / MMD / proxy-A / concept shift / stream PSI
+  stream/      replayer.py · engine.py · server.py (FastAPI, UDP/TCP/HTTP/MQTT, WebSocket) · static/dashboard.html
+  experiments/ e01 … e12
+  reporting/   plots.py · powerbi.py · report.py
+  run.py       CLI
+data/raw (NSL-KDD included) · data/processed (prepared samples) · results/ · reports/ · powerbi/ · weka/ · docs/ · tests/
+```
+
+## Datasets and citation
+* NSL-KDD — Tavallaee et al., IEEE CISDA 2009.
+* ForgeIIoT / IIEST_IoTForge_Pro — P. Kumar, S. Mullick, R. Das, IEEE DataPort, doi:10.21227/c4z1-yc52.
+* Edge-IIoTset — M. A. Ferrag et al., IEEE Access 10:40281–40306, 2022, doi:10.1109/ACCESS.2022.3165809.

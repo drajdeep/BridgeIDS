@@ -1,0 +1,4 @@
+dataset_key,dataset,era,granularity
+nsl,NSL-KDD,Legacy (1999/2009),connection
+forge,ForgeIIoT,Bridge IIoT (2023),packet
+edge,Edge-IIoTset,Modern IIoT (2022),packet

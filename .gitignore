@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+data/raw/forge/*
+data/raw/edge_iiot/*
+!data/raw/**/.gitkeep
+results/stream/
+results/logs/
+weka/weka.jar

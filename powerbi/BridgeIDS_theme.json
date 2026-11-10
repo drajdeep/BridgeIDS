@@ -1,0 +1,13 @@
+{
+  "name": "BridgeIDS SOC",
+  "dataColors": ["#2E5AAC", "#D9822B", "#2F9E72", "#C23B4E", "#7B5EA7", "#8C6D46", "#4A9BB5", "#9AA0A6"],
+  "background": "#FFFFFF",
+  "foreground": "#1D2433",
+  "tableAccent": "#2E5AAC",
+  "good": "#2F9E72",
+  "neutral": "#D9822B",
+  "bad": "#C23B4E",
+  "visualStyles": {
+    "*": {"*": {"title": [{"fontFamily": "Segoe UI Semibold", "fontSize": 12, "fontColor": {"solid": {"color": "#1D2433"}}}]}}
+  }
+}

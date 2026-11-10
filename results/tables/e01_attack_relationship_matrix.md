@@ -1,0 +1,9 @@
+| super_class     | NSL-KDD   | NSL-KDD examples                                           | ForgeIIoT                                                            | Edge-IIoTset                                         |
+|:----------------|:----------|:-----------------------------------------------------------|:---------------------------------------------------------------------|:-----------------------------------------------------|
+| NORMAL          | Normal    | normal                                                     | normal                                                               | Normal                                               |
+| DOS             | DoS       | apache2, back, land, mailbomb, neptune, pod                | ddos_mp, ddos_tcp, dos_deauth, dos_icmp, dos_ipv4, dos_land, dos_udp | DDoS_HTTP, DDoS_ICMP, DDoS_TCP, DDoS_UDP             |
+| RECON           | Probe     | ipsweep, mscan, nmap, portsweep, saint, satan              | os_finger, port_scan, vuln_scan                                      | Fingerprinting, Port_Scanning, Vulnerability_scanner |
+| MITM_SPOOF      | —         | —                                                          | mitm_arp, mitm_dhcp, mitm_ndp, sybil                                 | MITM                                                 |
+| UNAUTH_ACCESS   | R2L       | ftp_write, guess_passwd, httptunnel, imap, multihop, named | wild_card                                                            | Password                                             |
+| INJECTION       | U2R       | sqlattack                                                  | —                                                                    | SQL_injection, Uploading, XSS                        |
+| MALWARE_PRIVESC | U2R       | buffer_overflow, loadmodule, perl, ps, rootkit, xterm      | malw_back                                                            | Backdoor, Ransomware                                 |

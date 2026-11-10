@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BridgeIDS · Live IIoT Detection</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#151b23; --panel2:#1b2330; --line:#263041; --txt:#e6edf3; --muted:#8b98a9;
+  --accent:#4f8cff; --ok:#2fbf8f; --warn:#e3a33b; --bad:#ef5b6b; --vio:#a07cf0;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:14px 22px;border-bottom:1px solid var(--line);background:#0b0f15;position:sticky;top:0;z-index:2}
+header h1{font-size:17px;margin:0;font-weight:600;letter-spacing:.2px}
+header h1 span{color:var(--accent)}
+.pill{font:12px var(--mono);padding:3px 9px;border-radius:999px;background:var(--panel2);color:var(--muted);border:1px solid var(--line)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--bad);display:inline-block;margin-right:6px;vertical-align:middle}
+.dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.grow{flex:1}
+button{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:13px}
+button:hover{border-color:var(--accent)}
+main{padding:18px 22px;display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.card h2{margin:0 0 10px;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.kpis{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi .v{font:600 22px var(--mono);margin-top:2px}
+.kpi .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.kpi.bad .v{color:var(--bad)} .kpi.ok .v{color:var(--ok)} .kpi.warn .v{color:var(--warn)} .kpi.acc .v{color:var(--accent)}
+.c8{grid-column:span 8}.c4{grid-column:span 4}.c6{grid-column:span 6}.c12{grid-column:1/-1}
+@media(max-width:1100px){.c8,.c4,.c6{grid-column:1/-1}}
+canvas{width:100%;display:block}
+.bars .row{display:grid;grid-template-columns:140px 1fr 64px;gap:8px;align-items:center;margin:5px 0;font-size:12.5px}
+.bars .name{color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bars .track{background:var(--panel2);border-radius:4px;height:10px;overflow:hidden}
+.bars .fill{height:100%;border-radius:4px}
+.bars .num{font-family:var(--mono);color:var(--muted);text-align:right}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{color:var(--muted);text-align:left;font-weight:500;padding:6px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+td{padding:6px 8px;border-bottom:1px solid #1d2531;vertical-align:top}
+td.mono{font-family:var(--mono)}
+.tag{font:11px var(--mono);padding:2px 7px;border-radius:5px;background:#2a1820;color:#ff9aa6;white-space:nowrap}
+.tag.unk{background:#2a2412;color:#f2c46b}
+.tag.ok{background:#11271f;color:#6fe0b6}
+.expl{color:var(--muted);font-size:11.8px;margin-top:3px}
+.scroll{max-height:420px;overflow:auto}
+.drift{font-size:12.5px;border-left:3px solid var(--vio);padding:6px 10px;margin:6px 0;background:var(--panel2);border-radius:0 6px 6px 0}
+.drift b{color:var(--vio)}
+.muted{color:var(--muted)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:3px;margin-right:5px;vertical-align:middle}
+.empty{color:var(--muted);font-size:13px;padding:18px 0;text-align:center}
+code{font-family:var(--mono);background:var(--panel2);padding:1px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Bridge<span>IDS</span> · Live IIoT Intrusion Detection</h1>
+  <span class="pill"><span id="dot" class="dot"></span><span id="conn">connecting…</span></span>
+  <span class="pill" id="meta">model: –</span>
+  <div class="grow"></div>
+  <button onclick="fetch('/api/export/powerbi').then(r=>r.json()).then(j=>alertBox('Power BI CSVs written:\n'+j.written.join('\n')))">Export for Power BI</button>
+  <button onclick="fetch('/api/reset',{method:'POST'})">Reset</button>
+</header>
+<main>
+  <section class="kpis" id="kpis"></section>
+
+  <section class="card c8">
+    <h2>Traffic, alerts &amp; rolling quality</h2>
+    <canvas id="tl" height="260"></canvas>
+    <div class="legend">
+      <span><i style="background:var(--accent)"></i>throughput (pkt/s)</span>
+      <span><i style="background:var(--bad)"></i>alert rate (%)</span>
+      <span><i style="background:var(--ok)"></i>rolling F1 (%)</span>
+      <span><i style="background:var(--warn)"></i>online-model weight (%)</span>
+      <span><i style="background:var(--vio)"></i>drift event</span>
+    </div>
+  </section>
+  <section class="card c4">
+    <h2>Detected attack families</h2>
+    <div id="fam" class="bars"></div>
+    <h2 style="margin-top:16px">Ground truth (replay only)</h2>
+    <div id="truth" class="bars"></div>
+  </section>
+
+  <section class="card c4"><h2>Protocol mix</h2><div id="proto" class="bars"></div></section>
+  <section class="card c4"><h2>Service / port class</h2><div id="svc" class="bars"></div></section>
+  <section class="card c4"><h2>MQTT analytics (message types)</h2><div id="mqtt" class="bars"></div></section>
+
+  <section class="card c8">
+    <h2>Live alerts with explanations (SHAP)</h2>
+    <div class="scroll"><table><thead><tr><th>seq</th><th>source</th><th>family</th><th>score</th><th>anomaly</th><th>truth</th><th>why</th></tr></thead>
+    <tbody id="alerts"><tr><td colspan="7" class="empty">Waiting for traffic… start a replay: <code>python -m bridgeids.run replay --scenario campaign</code></td></tr></tbody></table></div>
+  </section>
+  <section class="card c4">
+    <h2>Concept-drift &amp; adaptation log</h2>
+    <div id="drift" class="scroll"><div class="empty">no drift detected yet</div></div>
+  </section>
+</main>
+<script>
+const COLORS={DOS:'#ef5b6b',RECON:'#e3a33b',MITM_SPOOF:'#a07cf0',UNAUTH_ACCESS:'#4f8cff',INJECTION:'#f07ab8',
+  MALWARE_PRIVESC:'#c0893c',UNKNOWN_ANOMALY:'#f2c46b',NORMAL:'#2fbf8f'};
+const MQ={1:'CONNECT',2:'CONNACK',3:'PUBLISH',4:'PUBACK',5:'PUBREC',6:'PUBREL',7:'PUBCOMP',8:'SUBSCRIBE',9:'SUBACK',10:'UNSUBSCRIBE',11:'UNSUBACK',12:'PINGREQ',13:'PINGRESP',14:'DISCONNECT'};
+const $=id=>document.getElementById(id);
+const fmt=(x,d=0)=>x==null||isNaN(x)?'–':Number(x).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+const pct=x=>x==null||isNaN(x)?'–':(100*x).toFixed(1)+'%';
+function alertBox(t){console.log(t);window.alert(t)}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+function kpis(s){
+  const items=[
+    ['Packets',fmt(s.n),'acc'],['Throughput /s',fmt(s.throughput,0),''],['Alerts',fmt(s.alerts),'bad'],
+    ['Alert rate',pct(s.alerts/Math.max(s.n,1)),'warn'],['Rolling F1',pct(s.f1),'ok'],['MCC',s.mcc==null?'–':s.mcc.toFixed(3),'ok'],
+    ['False-pos. rate',pct(s.fpr),s.fpr>0.05?'bad':''],['p95 latency',fmt(s.latency_ms_p95,2)+' ms',''],
+    ['Online weight',pct(s.w_online),'acc'],['Drift events',fmt(s.drift_events),s.drift_events?'warn':'']];
+  $('kpis').innerHTML=items.map(([l,v,c])=>`<div class="kpi ${c}"><div class="l">${l}</div><div class="v">${v}</div></div>`).join('');
+}
+function bars(el,obj,colorFn,labelFn){
+  const e=Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,9);
+  if(!e.length){$(el).innerHTML='<div class="empty">–</div>';return}
+  const m=Math.max(...e.map(x=>x[1]));
+  $(el).innerHTML=e.map(([k,v])=>`<div class="row"><div class="name" title="${esc(k)}">${esc(labelFn?labelFn(k):k)}</div>
+   <div class="track"><div class="fill" style="width:${100*v/m}%;background:${colorFn(k)}"></div></div><div class="num">${fmt(v)}</div></div>`).join('');
+}
+function timeline(s){
+  const c=$('tl'),dpr=window.devicePixelRatio||1,W=c.clientWidth,H=260;
+  c.width=W*dpr;c.height=H*dpr;const g=c.getContext('2d');g.scale(dpr,dpr);g.clearRect(0,0,W,H);
+  const t=s.timeline||[];if(t.length<2){g.fillStyle='#8b98a9';g.fillText('waiting for traffic…',12,24);return}
+  const L=38,R=12,T=10,B=24,w=W-L-R,h=H-T-B;
+  g.strokeStyle='#263041';g.fillStyle='#8b98a9';g.font='11px sans-serif';
+  for(let i=0;i<=4;i++){const y=T+h*i/4;g.beginPath();g.moveTo(L,y);g.lineTo(L+w,y);g.stroke();g.fillText((100-25*i)+'',8,y+4)}
+  const n0=t[0].n,n1=t[t.length-1].n||1;const X=n=>L+w*(n-n0)/Math.max(n1-n0,1);
+  // per-step throughput & alert rate
+  const thr=[],ar=[];for(let i=1;i<t.length;i++){const dn=t[i].n-t[i-1].n,dt=Math.max(t[i].t-t[i-1].t,1e-3);
+    thr.push([t[i].n,dn/dt]);ar.push([t[i].n,dn?100*(t[i].alerts-t[i-1].alerts)/dn:0])}
+  const mthr=Math.max(...thr.map(x=>x[1]),1);
+  const line=(pts,col,scale)=>{g.strokeStyle=col;g.lineWidth=1.8;g.beginPath();pts.forEach(([n,v],i)=>{const x=X(n),y=T+h*(1-Math.min(v*scale,100)/100);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()};
+  line(thr,'#4f8cff',100/mthr);line(ar,'#ef5b6b',1);
+  line(t.filter(p=>p.f1!=null).map(p=>[p.n,100*p.f1]),'#2fbf8f',1);
+  line(t.map(p=>[p.n,100*p.w_online]),'#e3a33b',1);
+  (s.drift_log||[]).forEach(d=>{if(d.seq>=n0){const x=X(d.seq);g.strokeStyle='#a07cf0';g.setLineDash([4,3]);g.beginPath();g.moveTo(x,T);g.lineTo(x,T+h);g.stroke();g.setLineDash([])}});
+  g.fillStyle='#8b98a9';g.fillText('packets '+fmt(n0)+' → '+fmt(n1)+'   (throughput scaled to max '+fmt(mthr)+'/s)',L,H-6);
+}
+function alertsTable(s){
+  const a=s.recent_alerts||[];if(!a.length)return;
+  $('alerts').innerHTML=a.map(r=>{const f=r.family||'';const cls=f==='UNKNOWN_ANOMALY'?'tag unk':'tag';
+   const ok=r.truth_fine&&r.truth_fine!=='Normal'&&r.truth_fine!=='normal';
+   return `<tr><td class="mono">${r.seq}</td><td>${esc(r.dataset)}<div class="expl">${esc(r.proto)}/${esc(r.service)}</div></td>
+   <td><span class="${cls}">${esc(f)}</span></td><td class="mono">${(r.score||0).toFixed(3)}</td><td class="mono">${pct(r.anomaly_pct)}</td>
+   <td>${r.truth_fine?`<span class="tag ${ok?'':'ok'}">${esc(r.truth_fine)}</span>`:'<span class="muted">–</span>'}</td>
+   <td><div class="expl">${esc(r.explanation||'')}</div></td></tr>`}).join('');
+}
+function driftLog(s){
+  const d=(s.drift_log||[]).slice().reverse();if(!d.length)return;
+  $('drift').innerHTML=d.map(e=>`<div class="drift"><b>packet ${fmt(e.seq)}</b> · ${esc(e.reason)}<div class="muted">${esc(e.action||'')}</div></div>`).join('');
+}
+function render(s){
+  kpis(s);timeline(s);
+  bars('fam',s.family_counts,k=>COLORS[k]||'#8b98a9');bars('truth',s.truth_counts,k=>COLORS[k]||'#8b98a9');
+  bars('proto',s.proto_counts,()=>'#4f8cff');bars('svc',s.service_counts,()=>'#2fbf8f');
+  bars('mqtt',s.mqtt_counts,()=>'#a07cf0',k=>MQ[k]||('type '+k));
+  alertsTable(s);driftLog(s);
+  const m=s.meta||{};$('meta').textContent='model: '+(m.trained_on||[]).join('+')+((m.zero_day_holdout||[]).length?'  ·  zero-day holdout: '+m.zero_day_holdout.join(', '):'');
+}
+function connect(){
+  const ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/ws');
+  ws.onopen=()=>{$('dot').classList.add('on');$('conn').textContent='live'};
+  ws.onclose=()=>{$('dot').classList.remove('on');$('conn').textContent='reconnecting…';setTimeout(connect,1500)};
+  ws.onmessage=e=>render(JSON.parse(e.data));
+}
+connect();
+setInterval(()=>fetch('/api/state').then(r=>r.json()).then(render).catch(()=>{}),5000);
+</script>
+</body>
+</html>

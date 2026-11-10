@@ -1,0 +1,4 @@
+dataset,records (used),native features (leak-free),CBS features,PBS features,fine labels,super-classes,attack %,TCP %,UDP %,ICMP %,ARP %,MQTT %,HTTP %
+NSL-KDD,148517,41,27,,40,6,48.12,81.9,11.9,6.3,0.0,0.0,32.8
+ForgeIIoT,170573,83,27,51.0,17,6,88.27,74.5,7.7,9.6,1.2,43.6,1.0
+Edge-IIoTset,157800,78,27,51.0,15,7,84.6,86.8,0.3,10.2,1.0,12.7,48.2

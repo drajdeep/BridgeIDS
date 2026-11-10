@@ -1,0 +1,30 @@
+{
+  "encoder": "Local TF-IDF + LSA (offline)",
+  "unique_sentences": 279,
+  "examples": {
+    "NSL-KDD": [
+      "tcp traffic to ftp file transfer port, flags syn ack fin push, small payload",
+      "tcp traffic to http web service port, flags syn ack fin push, medium payload, http get request",
+      "tcp traffic to other well known port, flags syn, half open connection attempt, no payload",
+      "tcp traffic to http web service port, flags syn ack fin push, large payload, http get request",
+      "tcp traffic to mail service port, flags syn ack fin push, small payload",
+      "tcp traffic to ephemeral private port, flags syn ack reset, connection reset or rejected, no payload"
+    ],
+    "ForgeIIoT": [
+      "tcp traffic to registered high port, flags none, no payload",
+      "tcp traffic to other well known port, flags syn, half open connection attempt, no payload, source equals destination land",
+      "icmp traffic to icmp echo, no payload",
+      "tcp traffic to mqtt broker service port, flags ack, no payload",
+      "other traffic to no port, no payload",
+      "udp traffic to other well known port, no payload"
+    ],
+    "Edge-IIoTset": [
+      "tcp traffic to registered high port, flags ack, no payload",
+      "tcp traffic to http web service port, flags ack fin, no payload, http exchange",
+      "tcp traffic to mqtt broker service port, flags ack fin push, tiny payload, mqtt disconnect message",
+      "tcp traffic to http web service port, flags syn ack, no payload, http exchange",
+      "tcp traffic to registered high port, flags none, no payload",
+      "tcp traffic to http web service port, flags ack push, small payload, http get request"
+    ]
+  }
+}
