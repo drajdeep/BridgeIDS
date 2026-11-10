@@ -1,0 +1,57 @@
+# BridgeIDS — central configuration.
+# Every path is relative to the project root unless absolute.
+
+seed: 42
+n_jobs: -1            # -1 = all CPU cores
+
+paths:
+  raw_nsl: data/raw/nsl_kdd                 # KDDTrain+.txt / KDDTest+.txt (or the .arff files)
+  raw_forge: data/raw/forge                 # folder that contains "Unprocessed Dataset/*.csv" (or Preprocessed)
+  raw_edge: data/raw/edge_iiot              # ML-EdgeIIoT-dataset.csv
+  processed: data/processed
+  results: results
+  tables: results/tables
+  figures: results/figures
+  models: results/models
+  reports: reports
+  powerbi: powerbi
+  weka: weka
+
+prepare:
+  forge_rows_per_class: 10000   # stratified random sample per Forge capture file (17 files)
+  forge_normal_rows: 20000      # more normal traffic, it is the reference class
+  edge_max_rows: null           # null = keep the full ML-EdgeIIoT file (157,800 rows)
+
+experiments:
+  # Upper bounds on rows used per dataset in the heavier experiments (keeps a laptop run < ~45 min).
+  max_train_rows: 60000
+  max_test_rows: 30000
+  seeds: [42, 7, 2024]
+  transfer_fractions: [0.0002, 0.001, 0.01, 0.05, 0.10]
+  bootstrap: 300
+  shap_samples: 600
+  lime_samples: 3
+  tca_rows: 1500
+  dann_epochs: 25
+  cl_epochs: 8
+  zsl_holdout_edge: [DDoS_HTTP, XSS, Fingerprinting, Ransomware]
+
+nlp:
+  # If sentence-transformers + the model can be downloaded it is used, otherwise a local
+  # TF-IDF + SVD "domain encoder" is used automatically (fully offline).
+  sbert_model: sentence-transformers/all-MiniLM-L6-v2
+  prefer_sbert: true
+  dim: 64
+
+stream:
+  host: 127.0.0.1
+  udp_port: 9999
+  http_port: 8000
+  batch_ms: 100
+  max_batch: 512
+  alert_threshold: 0.5
+  anomaly_weight: 0.35
+  explain_top_k: 4
+  window: 2000                  # sliding window for live metrics
+  sqlite: results/stream/stream.db
+  powerbi_push_url: ""          # optional Power BI streaming-dataset push URL
