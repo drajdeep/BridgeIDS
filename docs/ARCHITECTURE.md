@@ -2,30 +2,35 @@
 
 ```mermaid
 flowchart LR
-  subgraph Data
-    N[NSL-KDD<br/>connections] --> P[prepare: loaders.py]
-    F[ForgeIIoT raw captures<br/>17 files] --> P
-    E[Edge-IIoTset<br/>packets] --> P
-    P --> PQ[(data/processed/*.parquet)]
+  subgraph Data["Data"]
+    N["NSL-KDD<br/>connections"] --> P["prepare: loaders.py"]
+    F["ForgeIIoT raw captures<br/>17 files"] --> P
+    E["Edge-IIoTset<br/>packets"] --> P
+    P --> PQ[("data/processed/*.parquet")]
   end
-  PQ --> V[canonical_view<br/>features/views.py]
-  V --> CBS[CBS · 27 feats<br/>all datasets]
-  V --> PBS[PBS · 51 feats<br/>Forge ↔ Edge]
-  V --> TXT[flow → text<br/>nlp/flow2text.py]
-  PQ --> NAT[native leak-free]
-  subgraph Experiments 01–12
-    CBS & PBS & TXT & NAT --> X[baselines · cross-dataset · transfer · DA · CL · NLP · ZSL · XAI · drift · stream benchmark · Weka]
+  PQ --> V["canonical_view<br/>features/views.py"]
+  V --> CBS["CBS - 27 feats<br/>all datasets"]
+  V --> PBS["PBS - 51 feats<br/>Forge and Edge"]
+  V --> TXT["flow to text<br/>nlp/flow2text.py"]
+  PQ --> NAT["native leak-free"]
+  subgraph Exps["Experiments 01-12"]
+    CBS --> X
+    PBS --> X
+    TXT --> X
+    NAT --> X
+    X["baselines, cross-dataset, transfer, DA, CL, NLP, ZSL, XAI, drift, stream benchmark, Weka"]
   end
-  X --> R[(results/tables + figures)]
-  R --> REP[paper_draft.md · results_dashboard.html · powerbi/data]
-  subgraph Dynamic detection
-    RP[replayer.py<br/>UDP/TCP/HTTP/MQTT] -->|JSON packets| S[server.py FastAPI]
-    S --> EN[engine.py<br/>schema detect → PBS → hybrid score<br/>SHAP narrative · PSI/ADWIN drift<br/>online challenger + Hedge]
-    EN --> WS[live dashboard /ws]
-    EN --> DB[(SQLite stream.db)]
-    EN --> PBI[Power BI push / CSV]
+  X --> R[("results/tables + figures")]
+  R --> REP["paper_draft.md, results_dashboard.html, powerbi/data"]
+  subgraph Dyn["Dynamic detection"]
+    RP["replayer.py<br/>UDP/TCP/HTTP/MQTT"] -->|"JSON packets"| S["server.py FastAPI"]
+    S --> EN["engine.py<br/>schema detect, PBS, hybrid score<br/>SHAP narrative, PSI/ADWIN drift<br/>online challenger + Hedge"]
+    EN --> WS["live dashboard /ws"]
+    EN --> DB[("SQLite stream.db")]
+    EN --> PBI["Power BI push / CSV"]
   end
-  X -. trains .-> ART[(results/models/*.joblib)] --> EN
+  X -. trains .-> ART[("results/models/*.joblib")]
+  ART --> EN
 ```
 
 ## Feature alignment tiers
