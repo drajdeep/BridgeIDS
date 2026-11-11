@@ -51,26 +51,26 @@ Research questions
 
 ### Done (all 12 experiments run end to end; tests pass)
 
-| Plan item | Status | Where |
+| Plan item | Status | Where (click to open in GitHub) |
 |---|---|---|
-| T1-1 Dataset study | Done | E01 |
-| T1-2 Feature alignment | Done (3 tiers) | `features/views.py` |
-| T1-3 Baselines (DT, RF, AdaBoost, XGB, LGBM, MLP, Weka) | Done | E02, E12 |
-| T1-4 Cross-dataset testing | Done | E03 |
-| T1-5 Transfer learning | Done | E04 |
-| T1-6 Domain adaptation | Done | E05 |
-| T1-7 Continual learning | Done | E06 |
-| T2-1 Literature review (44 papers) | Done (links need manual check) | `reports/related_work.md` |
-| T2-2 Attack taxonomy | Done (7 classes) | `data/taxonomy.py`, E01 |
-| T2-3 NLP representation | Done | E07 |
-| T2-4 Zero-shot detection | Done | E08 |
-| T2-5 XAI (SHAP, LIME, explanation drift) | Done | E09 |
-| T2-6 Drift analysis | Done | E10 |
-| T2-7 Power BI | **Kit done**, `.pbix` not built (see below) | `powerbi/` |
-| RQ1–RQ5 answers | Done | section 4, `reports/paper_draft.md` |
-| Live (dynamic) detection, RQ6 | Done | `stream/`, E11 |
-| Leakage audit of the hand-over notebooks | Done | E02 |
-| Setup for Windows and Linux, tests | Done | `docs/`, `setup_*`, `tests/` |
+| T1-1 Dataset study | Done | [e01_dataset_study.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e01_dataset_study.py) · tables [results/tables](https://github.com/drajdeep/BridgeIDS/tree/main/results/tables) (`e01_*`) |
+| T1-2 Feature alignment | Done (3 tiers) | [features/views.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/features/views.py) · [docs/ARCHITECTURE.md](https://github.com/drajdeep/BridgeIDS/blob/main/docs/ARCHITECTURE.md) |
+| T1-3 Baselines (DT, RF, AdaBoost, XGB, LGBM, MLP, Weka) | Done | [e02_baselines.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e02_baselines.py), [e12_artifacts.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e12_artifacts.py) · [models/zoo.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/models/zoo.py) · [weka/](https://github.com/drajdeep/BridgeIDS/tree/main/weka) |
+| T1-4 Cross-dataset testing | Done | [e03_cross_dataset.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e03_cross_dataset.py) · tables `e03_*` in [results/tables](https://github.com/drajdeep/BridgeIDS/tree/main/results/tables) |
+| T1-5 Transfer learning | Done | [e04_transfer.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e04_transfer.py) · tables `e04_*` |
+| T1-6 Domain adaptation | Done | [e05_domain_adaptation.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e05_domain_adaptation.py) · [adaptation/methods.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/adaptation/methods.py) |
+| T1-7 Continual learning | Done | [e06_continual.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e06_continual.py) · [models/npnet.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/models/npnet.py) (EWC) |
+| T2-1 Literature review (44 papers) | Done (links need manual check) | [reports/related_work.md](https://github.com/drajdeep/BridgeIDS/blob/main/reports/related_work.md) |
+| T2-2 Attack taxonomy | Done (7 classes) | [data/taxonomy.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/data/taxonomy.py) · [e01_dataset_study.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e01_dataset_study.py) |
+| T2-3 NLP representation | Done | [e07_nlp.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e07_nlp.py) · [nlp/](https://github.com/drajdeep/BridgeIDS/tree/main/src/bridgeids/nlp) |
+| T2-4 Zero-shot detection | Done | [e08_zeroshot.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e08_zeroshot.py) · [models/hybrid.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/models/hybrid.py) |
+| T2-5 XAI (SHAP, LIME, explanation drift) | Done | [e09_xai.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e09_xai.py) · [xai/explain.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/xai/explain.py) |
+| T2-6 Drift analysis | Done | [e10_drift.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e10_drift.py) · [drift.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/drift.py) |
+| T2-7 Power BI | **Kit done**, `.pbix` not built (see below) | [powerbi/](https://github.com/drajdeep/BridgeIDS/tree/main/powerbi) · [POWERBI_GUIDE.md](https://github.com/drajdeep/BridgeIDS/blob/main/powerbi/POWERBI_GUIDE.md) · [powerbi/data/](https://github.com/drajdeep/BridgeIDS/tree/main/powerbi/data) |
+| RQ1–RQ5 answers | Done | [section 4](#4-key-results) · [reports/paper_draft.md](https://github.com/drajdeep/BridgeIDS/blob/main/reports/paper_draft.md) · [reports/results_dashboard.html](https://github.com/drajdeep/BridgeIDS/blob/main/reports/results_dashboard.html) |
+| Live (dynamic) detection, RQ6 | Done | [stream/](https://github.com/drajdeep/BridgeIDS/tree/main/src/bridgeids/stream) · [e11_stream_benchmark.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e11_stream_benchmark.py) |
+| Leakage audit of the hand-over notebooks | Done | [e02_baselines.py](https://github.com/drajdeep/BridgeIDS/blob/main/src/bridgeids/experiments/e02_baselines.py) · [e02_leakage_audit.md](https://github.com/drajdeep/BridgeIDS/blob/main/results/tables/e02_leakage_audit.md) · [notebooks/handover_original/](https://github.com/drajdeep/BridgeIDS/tree/main/notebooks/handover_original) |
+| Setup for Windows and Linux, tests | Done | [SETUP_WINDOWS.md](https://github.com/drajdeep/BridgeIDS/blob/main/docs/SETUP_WINDOWS.md), [SETUP_LINUX.md](https://github.com/drajdeep/BridgeIDS/blob/main/docs/SETUP_LINUX.md), [setup_windows.bat](https://github.com/drajdeep/BridgeIDS/blob/main/setup_windows.bat), [setup_linux.sh](https://github.com/drajdeep/BridgeIDS/blob/main/setup_linux.sh), [tests/](https://github.com/drajdeep/BridgeIDS/tree/main/tests) |
 
 ### To do
 
